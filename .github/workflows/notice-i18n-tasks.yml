@@ -56,10 +56,7 @@ jobs:
     - name: Check diffs
       id: check-diffs
       run: |
-        echo "steps.find-junction-hash.outputs.hash"
-        echo ${{ steps.find-junction-hash.outputs.hash }}
-
-        updated_files="$(.github/workflows/deep-diff.sh website/content/en ${{ github.sha }} ${{ github.event.pull_request.head.sha }})"
+        updated_files="$(.github/workflows/deep-diff.sh website/content/en ${{ steps.find-junction-hash.outputs.hash }} ${{ github.event.pull_request.head.sha }})"
         echo "${updated_files}" # for debugging
         echo "count=$(echo $updated_files | grep -v '^$' | wc -l)" >> $GITHUB_OUTPUT
 

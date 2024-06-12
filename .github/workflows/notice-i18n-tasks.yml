@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 1
-    
+
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -40,10 +40,17 @@ jobs:
         echo "github.repository: ${{ github.repository }}"
         echo "github.repositoryUrl: ${{ github.repositoryUrl }}"
 
-        git log --pretty=%H ${{ github.event.pull_request.base.ref }}..${{ github.event.pull_request.head.ref }}
-        commits=$(git log --pretty=%H ${{ github.event.pull_request.base.ref }}..${{ github.event.pull_request.head.ref }} | wc -l)
+        git remote add upstream https://github.com/hhiroshell/i18n-notifier-demo.git
+        git fetch upstream
 
-        git log --pretty=%H -n $(expr ${commits} + 1) ${{ github.event.pull_request.head.ref }} | tail -1
+        echo "======= head log ======="
+        git log --oneline
+
+        echo "======= upstream log ======="
+        git log --oneline upstream/${{ github.event.pull_request.base.ref }}
+
+        echo "======= result ======="
+        .github/workflows/find-junction-hash.sh upstream/${{ github.event.pull_request.base.ref }}
 
     - name: Check diffs
       id: check-diffs

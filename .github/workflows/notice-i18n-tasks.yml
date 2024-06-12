@@ -26,6 +26,16 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
         fetch-depth: 0
 
+    - name: Find junction hash
+      run: |
+        echo "github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}"
+        echo "github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}"
+
+        git log --pretty=%H ${{ github.event.pull_request.base.ref }}..${{ github.event.pull_request.head.ref }}
+        commits=$(git log --pretty=%H ${{ github.event.pull_request.base.ref }}..${{ github.event.pull_request.head.ref }} | wc -l)
+
+        git log --pretty=%H -n $(expr ${commits} + 1) ${{ github.event.pull_request.head.ref }} | tail -1
+
     - name: Check diffs
       id: check-diffs
       run: |

@@ -41,17 +41,17 @@ jobs:
         echo "github.repository: ${{ github.repository }}"
         echo "github.repositoryUrl: ${{ github.repositoryUrl }}"
 
-        git remote add --fetch upstream https://github.com/${{ github.repository }}.git
+        git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
 
         echo "======= head log ======="
         git log --oneline
 
         echo "======= upstream log ======="
-        git log --oneline upstream/${{ github.event.pull_request.base.ref }}
+        git log --oneline "upstream/${{ github.event.pull_request.base.ref }}"
 
         echo "======= result ======="
-        .github/workflows/find-junction-hash.sh upstream/${{ github.event.pull_request.base.ref }}
-        echo "hash=$(.github/workflows/find-junction-hash.sh)" >> $GITHUB_OUTPUT
+        .github/workflows/find-junction-hash.sh "upstream/${{ github.event.pull_request.base.ref }}"
+        echo "hash=$(.github/workflows/find-junction-hash.sh upstream/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
 
     - name: Check diffs
       id: check-diffs

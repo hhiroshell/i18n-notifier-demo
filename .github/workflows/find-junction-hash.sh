@@ -20,3 +20,6 @@ while read -r lh; do
         fi
     done <<< "${logs_upstream}"
 done <<< "${logs_head}"
+
+echo "Illegal state: no junciton commit found." >&2
+exit 1

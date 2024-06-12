@@ -36,6 +36,9 @@ jobs:
         echo "github.base.ref: ${{ github.base.ref }}"
         echo "github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}"
         echo "github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}"
+        echo "github.action_repository: ${{ github.action_repository }}"
+        echo "github.repository: ${{ github.repository }}"
+        echo "github.repositoryUrl: ${{ github.repositoryUrl }}"
 
         git log --pretty=%H ${{ github.event.pull_request.base.ref }}..${{ github.event.pull_request.head.ref }}
         commits=$(git log --pretty=%H ${{ github.event.pull_request.base.ref }}..${{ github.event.pull_request.head.ref }} | wc -l)

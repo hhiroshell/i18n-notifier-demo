@@ -41,7 +41,7 @@ jobs:
         echo "github.repository: ${{ github.repository }}"
         echo "github.repositoryUrl: ${{ github.repositoryUrl }}"
 
-        git remote add --fetch upstream https://github.com/{{ github.repository }}.git
+        git remote add --fetch upstream https://github.com/${{ github.repository }}.git
 
         echo "======= head log ======="
         git log --oneline

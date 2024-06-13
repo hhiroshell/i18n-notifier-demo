@@ -29,36 +29,28 @@ jobs:
     - name: Find junction hash
       id: find-junction-hash
       run: |
-        echo "github.action.ref: ${{ github.action.ref }}"
-        echo "github.ref: ${{ github.ref }}"
-        echo "github.ref_name: ${{ github.ref_name }}"
-        echo "github.ref_type: ${{ github.ref_type }}"
-        echo "github.head.ref: ${{ github.head.ref }}"
-        echo "github.base.ref: ${{ github.base.ref }}"
-        echo "github.event.pull_request.head.ref: ${{ github.event.pull_request.head.ref }}"
-        echo "github.event.pull_request.base.ref: ${{ github.event.pull_request.base.ref }}"
-        echo "github.action_repository: ${{ github.action_repository }}"
-        echo "github.repository: ${{ github.repository }}"
-        echo "github.repositoryUrl: ${{ github.repositoryUrl }}"
-
         git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
 
-        echo "======= head log ======="
-        git log --oneline
-
-        echo "======= upstream log ======="
+        # for debugging
+        echo "==== Recent commit logs of the PR branch ===="
+        git log --oneline -n 20
+        echo "==== Recent commit logs of the upstream branch ===="
         git log --oneline "upstream/${{ github.event.pull_request.base.ref }}"
 
-        echo "======= result ======="
-        .github/workflows/find-junction-hash.sh "upstream/${{ github.event.pull_request.base.ref }}"
-        echo "hash=$(.github/workflows/find-junction-hash.sh upstream/${{ github.event.pull_request.base.ref }})" >> $GITHUB_OUTPUT
+        hash=$(.github/workflows/find-junction-hash.sh "upstream/${{ github.event.pull_request.base.ref }}")
+        echo "hash=${hash}" >> $GITHUB_OUTPUT
+
+        echo "==== junction commit hash ===="
+        echo "${hash}"
 
     - name: Check diffs
       id: check-diffs
       run: |
         updated_files="$(.github/workflows/deep-diff.sh website/content/en ${{ steps.find-junction-hash.outputs.hash }} ${{ github.event.pull_request.head.sha }})"
-        echo "${updated_files}" # for debugging
         echo "count=$(echo $updated_files | grep -v '^$' | wc -l)" >> $GITHUB_OUTPUT
+
+        echo "==== updated files ===="
+        echo "${updated_files}"
 
     - name: Send notice on the issue
       if: steps.check-diffs.outputs.count > 0

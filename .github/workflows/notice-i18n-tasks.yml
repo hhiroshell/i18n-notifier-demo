@@ -26,7 +26,7 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
         fetch-depth: 0
 
-    - name: Find junction hash
+    - name: Debug
       id: find-junction-hash
       run: |
         git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
@@ -46,7 +46,13 @@ jobs:
     - name: Check diffs
       id: check-diffs
       run: |
-        updated_files="$(.github/workflows/deep-diff.sh website/content/en ${{ steps.find-junction-hash.outputs.hash }} ${{ github.event.pull_request.head.sha }})"
+        git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
+        ancestor="$(git show-branch --merge-base upstream/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }})"
+
+        echo "==== ancestor ===="
+        echo "${ancestor}"
+
+        updated_files="$(.github/workflows/deep-diff.sh website/content/en ${ancestor} ${{ github.event.pull_request.head.sha }})"
         echo "count=$(echo $updated_files | grep -v '^$' | wc -l)" >> $GITHUB_OUTPUT
 
         echo "==== updated files ===="

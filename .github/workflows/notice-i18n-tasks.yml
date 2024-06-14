@@ -26,27 +26,10 @@ jobs:
         ref: ${{ github.event.pull_request.head.ref }}
         fetch-depth: 0
 
-    - name: Debug
-      id: find-junction-hash
-      run: |
-        git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
-
-        # for debugging
-        echo "==== Recent commit logs of the PR branch ===="
-        git log --oneline -n 20
-        echo "==== Recent commit logs of the upstream branch ===="
-        git log --oneline "upstream/${{ github.event.pull_request.base.ref }}"
-
-        hash=$(.github/workflows/find-junction-hash.sh "upstream/${{ github.event.pull_request.base.ref }}")
-        echo "hash=${hash}" >> $GITHUB_OUTPUT
-
-        echo "==== junction commit hash ===="
-        echo "${hash}"
-
     - name: Check diffs
       id: check-diffs
       run: |
-        # git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
+        git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
         ancestor="$(git show-branch --merge-base upstream/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }})"
 
         echo "==== ancestor ===="

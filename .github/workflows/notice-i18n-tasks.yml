@@ -46,7 +46,7 @@ jobs:
     - name: Check diffs
       id: check-diffs
       run: |
-        git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
+#        git remote add --fetch upstream "https://github.com/${{ github.repository }}.git"
         ancestor="$(git show-branch --merge-base upstream/${{ github.event.pull_request.base.ref }} ${{ github.event.pull_request.head.sha }})"
 
         echo "==== ancestor ===="
